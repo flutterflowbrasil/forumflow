@@ -62,7 +62,7 @@ const DuvidaDetail = () => {
         .select(`
           *,
           category:categories(name),
-          author:profiles(display_name, avatar_url)
+          author:profiles(display_name, avatar_url, role)
         `)
         .eq('id', id)
         .single();
@@ -83,6 +83,7 @@ const DuvidaDetail = () => {
           author: {
               name: duvidaData.author.display_name,
               avatarUrl: duvidaData.author.avatar_url,
+              role: duvidaData.author.role,
           },
           tags: [],
           category_name: duvidaData.category.name,
@@ -144,16 +145,22 @@ const DuvidaDetail = () => {
     );
   }
 
+  // Verificar se é uma informação de admin (Novidades ou Dicas)
+  const isAdminInfo = (duvida.author as any).role === 'admin' && 
+                     (duvida.category_name === 'Novidades' || duvida.category_name === 'Dicas');
+
   return (
     <MainLayout>
       <div>
         <div className="bg-card p-6 rounded-lg shadow-sm">
           <div className="flex items-center gap-2">
             {duvida.category_name && <Badge variant="outline">{duvida.category_name}</Badge>}
-            {duvida.is_resolved ? (
-              <Badge className="bg-green-600 hover:bg-green-700 text-white">Resolvida</Badge>
-            ) : (
-              <Badge variant="destructive">Em Aberto</Badge>
+            {!isAdminInfo && (
+              duvida.is_resolved ? (
+                <Badge className="bg-green-600 hover:bg-green-700 text-white">Resolvida</Badge>
+              ) : (
+                <Badge variant="destructive">Em Aberto</Badge>
+              )
             )}
           </div>
           <h1 className="text-3xl font-bold mt-2 mb-4">{duvida.title}</h1>
