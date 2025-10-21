@@ -157,7 +157,7 @@ const CreateDuvidaDialog = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="col-span-3"
-              placeholder="Ex: Como centralizar uma div?"
+              placeholder="Ex: Como criar um row no supabase?"
             />
           </div>
           <div className="grid grid-cols-4 items-start gap-4">

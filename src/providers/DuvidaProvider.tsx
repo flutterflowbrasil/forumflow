@@ -39,7 +39,7 @@ export const DuvidaProvider = ({ children }: { children: React.ReactNode }) => {
         .select(`
           *,
           category:categories(name),
-          author:profiles(display_name, avatar_url)
+          author:profiles(display_name, avatar_url, role)
         `)
         .order('created_at', { ascending: false })
         .abortSignal(controller.signal);
@@ -77,7 +77,8 @@ export const DuvidaProvider = ({ children }: { children: React.ReactNode }) => {
           lastActivity: new Date(duvida.last_activity_at || duvida.created_at).toLocaleDateString(),
           author: {
             name: duvida.author?.display_name || 'Usuário Desconhecido',
-            avatarUrl: duvida.author?.avatar_url || ''
+            avatarUrl: duvida.author?.avatar_url || '',
+            role: duvida.author?.role || 'user'
           },
           author_id: duvida.author_id,
           tags: [],
@@ -88,7 +89,17 @@ export const DuvidaProvider = ({ children }: { children: React.ReactNode }) => {
           is_hidden: duvida.is_hidden || false
         }));
         
-        const visibleDuvidas = formattedData.filter(d => !d.is_hidden);
+        // Filtrar: remover posts ocultos E posts de admin com categorias "Novidades" ou "Dicas"
+        const visibleDuvidas = formattedData.filter(d => {
+          if (d.is_hidden) return false;
+          
+          // Se for admin E a categoria for "Novidades" ou "Dicas", não exibir na Home
+          const isAdminInfoPost = d.author.role === 'admin' && 
+                                 (d.category_name === 'Novidades' || d.category_name === 'Dicas');
+          
+          return !isAdminInfoPost;
+        });
+        
         setDuvidas(visibleDuvidas);
       }
     } catch (err: any) {

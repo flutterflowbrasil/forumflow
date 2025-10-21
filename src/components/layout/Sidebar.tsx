@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Home, User, LogOut, Shield, Users, List, X } from "lucide-react";
+import { Home, User, LogOut, Shield, Users, List, X, Info } from "lucide-react";
 import CreateDuvidaDialog from "@/components/CreateDuvidaDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, Link } from "react-router-dom";
@@ -85,6 +85,14 @@ const Sidebar = () => {
               >
                 <Home className="h-4 w-4" />
                 Home
+              </Link>
+              <Link
+                to="/informacoes"
+                onClick={handleLinkClick}
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+              >
+                <Info className="h-4 w-4" />
+                Informações
               </Link>
               <Link
                 to="/minhas-duvidas"

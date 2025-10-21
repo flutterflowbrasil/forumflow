@@ -44,9 +44,10 @@ export interface Duvida {
 
 interface DuvidaCardProps {
   duvida: Duvida;
+  hideStatusBadge?: boolean;
 }
 
-const DuvidaCard: React.FC<DuvidaCardProps> = ({ duvida }) => {
+const DuvidaCard: React.FC<DuvidaCardProps> = ({ duvida, hideStatusBadge = false }) => {
   const { session, profile } = useAuth();
   const { refreshDuvidas } = useDuvidas();
   const [likeCount, setLikeCount] = useState(duvida.likes);
@@ -114,10 +115,12 @@ const DuvidaCard: React.FC<DuvidaCardProps> = ({ duvida }) => {
             <div>
               <div className="flex items-center gap-2">
                 {duvida.category_name && <Badge variant="outline">{duvida.category_name}</Badge>}
-                {duvida.is_resolved ? (
-                  <Badge className="bg-green-600 hover:bg-green-700 text-white">Resolvida</Badge>
-                ) : (
-                  <Badge variant="destructive">Em Aberto</Badge>
+                {!hideStatusBadge && (
+                  duvida.is_resolved ? (
+                    <Badge className="bg-green-600 hover:bg-green-700 text-white">Resolvida</Badge>
+                  ) : (
+                    <Badge variant="destructive">Em Aberto</Badge>
+                  )
                 )}
               </div>
               <h2 className="text-xl font-semibold mt-1">

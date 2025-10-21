@@ -3,6 +3,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
+import Informacoes from "./pages/Informacoes";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./providers/AuthProvider";
 import { SidebarProvider } from "./providers/SidebarProvider";
@@ -30,6 +31,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Index />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/informacoes" 
+                  element={
+                    <ProtectedRoute>
+                      <Informacoes />
                     </ProtectedRoute>
                   } 
                 />
