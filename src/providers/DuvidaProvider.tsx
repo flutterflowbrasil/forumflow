@@ -25,7 +25,6 @@ export const DuvidaProvider = ({ children }: { children: React.ReactNode }) => {
     // Timeout de segurança
     const timeoutId = setTimeout(() => {
       if (isMounted) {
-        console.warn('[DuvidaProvider] Timeout - liberando tela');
         setLoading(false);
       }
     }, 8000);
@@ -57,10 +56,8 @@ export const DuvidaProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (error) {
         if (error.message.includes('abort')) {
-          console.warn('Request cancelada por timeout');
           return;
         }
-        console.error("Erro ao buscar dúvidas:", error);
         toast.error('Erro: ' + error.message, { duration: 3000 });
         setDuvidas([]);
       } else if (!data || data.length === 0) {
@@ -108,11 +105,9 @@ export const DuvidaProvider = ({ children }: { children: React.ReactNode }) => {
         if (!isMounted) return;
         
         if (err.name === 'AbortError' || err.message?.includes('abort')) {
-          console.warn('Request cancelada');
           return;
         }
         
-        console.error("Erro ao carregar dúvidas:", err);
         setDuvidas([]);
     } finally {
         if (isMounted) {
