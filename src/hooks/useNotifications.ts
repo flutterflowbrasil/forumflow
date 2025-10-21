@@ -6,7 +6,7 @@ export interface Notification {
   id: string;
   message: string;
   link: string;
-  type: 'comment' | 'reply' | 'mention' | 'system';
+  type: 'comment' | 'reply' | 'mention' | 'system' | 'new_post';
   is_read: boolean;
   created_at: string;
 }
@@ -18,19 +18,25 @@ export const useNotifications = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchNotifications = useCallback(async () => {
-    if (!session) return;
+    if (!session) {
+      setNotifications([]);
+      setUnreadCount(0);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const { data, error } = await supabase
       .from('notifications')
       .select('*')
+      .eq('user_id', session.user.id)
       .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching notifications:', error);
       setNotifications([]);
     } else {
-      setNotifications(data);
-      const unread = data.filter(n => !n.is_read).length;
+      setNotifications(data || []);
+      const unread = (data || []).filter(n => !n.is_read).length;
       setUnreadCount(unread);
     }
     setLoading(false);
@@ -58,5 +64,25 @@ export const useNotifications = () => {
     }
   };
 
-  return { notifications, unreadCount, loading, markAllAsRead, refresh: fetchNotifications };
+  const clearAllNotifications = async () => {
+    if (!session || notifications.length === 0) return false;
+
+    // Deletar todas as notificações do usuário atual
+    const { error } = await supabase
+      .from('notifications')
+      .delete()
+      .eq('user_id', session.user.id);
+
+    if (error) {
+      console.error('Error clearing notifications:', error);
+      return false;
+    } else {
+      // Limpar o estado local imediatamente
+      setNotifications([]);
+      setUnreadCount(0);
+      return true;
+    }
+  };
+
+  return { notifications, unreadCount, loading, markAllAsRead, clearAllNotifications, refresh: fetchNotifications };
 };

@@ -1,4 +1,4 @@
-import { Bell, MessageCircle, FileText } from 'lucide-react';
+import { Bell, MessageCircle, FileText, CheckCheck } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { useNotifications, Notification } from '@/hooks/useNotifications';
@@ -62,13 +62,11 @@ const Notifications = () => {
   const { notifications, unreadCount, loading, markAllAsRead } = useNotifications();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMarking, setIsMarking] = useState(false);
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
-    if (open && unreadCount > 0) {
-      // Marcar como lido após 2 segundos
-      setTimeout(markAllAsRead, 2000);
-    }
+    // Removido o auto-mark como lido ao abrir
   };
 
   const handleNavigate = (link: string) => {
@@ -76,6 +74,14 @@ const Notifications = () => {
       navigate(link);
       setIsOpen(false);
     }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    if (unreadCount === 0) return;
+    
+    setIsMarking(true);
+    await markAllAsRead();
+    setIsMarking(false);
   };
 
   return (
@@ -97,11 +103,25 @@ const Notifications = () => {
       <PopoverContent className="w-96 p-0" align="end">
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="font-semibold text-lg">Notificações</h3>
-          {unreadCount > 0 && (
-            <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">
-              {unreadCount} nova{unreadCount !== 1 ? 's' : ''}
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {unreadCount > 0 && (
+              <>
+                <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">
+                  {unreadCount} nova{unreadCount !== 1 ? 's' : ''}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleMarkAllAsRead}
+                  disabled={isMarking}
+                  className="text-primary hover:text-primary"
+                >
+                  <CheckCheck className="h-4 w-4 mr-1" />
+                  {isMarking ? 'Marcando...' : 'Marcar como Lidas'}
+                </Button>
+              </>
+            )}
+          </div>
         </div>
         <ScrollArea className="h-[400px]">
           {loading ? (
