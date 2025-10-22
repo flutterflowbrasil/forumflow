@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, ThumbsUp, Trash2 } from "lucide-react";
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "./ui/button";
 import { useDuvidas } from "@/providers/DuvidaProvider";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export interface Duvida {
   id: string;
@@ -50,6 +51,8 @@ interface DuvidaCardProps {
 const DuvidaCard: React.FC<DuvidaCardProps> = ({ duvida, hideStatusBadge = false }) => {
   const { session, profile } = useAuth();
   const { refreshDuvidas } = useDuvidas();
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [likeCount, setLikeCount] = useState(duvida.likes);
   const [hasLiked, setHasLiked] = useState(duvida.userHasLiked);
   const [isLiking, setIsLiking] = useState(false);
@@ -103,8 +106,29 @@ const DuvidaCard: React.FC<DuvidaCardProps> = ({ duvida, hideStatusBadge = false
     }
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Não navegar se clicar em botões, links ou elementos interativos
+    const target = e.target as HTMLElement;
+    if (
+      target.closest('button') || 
+      target.closest('a') || 
+      target.closest('[role="button"]')
+    ) {
+      return;
+    }
+    
+    if (isMobile) {
+      navigate(`/duvida/${duvida.id}`);
+    }
+  };
+
   return (
-    <div className="mb-4 p-6 border rounded-lg bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow">
+    <div 
+      className={`mb-4 p-6 border rounded-lg bg-card text-card-foreground shadow-sm hover:shadow-md transition-shadow ${
+        isMobile ? 'cursor-pointer active:scale-[0.98] transition-transform' : ''
+      }`}
+      onClick={handleCardClick}
+    >
       <div className="flex items-start space-x-4">
         <Avatar>
           <AvatarImage src={duvida.author?.avatarUrl} alt={duvida.author?.name} />

@@ -32,7 +32,11 @@ interface Category {
   name: string;
 }
 
-const CreateDuvidaDialog = () => {
+interface CreateDuvidaDialogProps {
+  compact?: boolean;
+}
+
+const CreateDuvidaDialog = ({ compact = false }: CreateDuvidaDialogProps) => {
   const { profile } = useAuth();
   const { refreshDuvidas } = useDuvidas();
   const [open, setOpen] = useState(false);
@@ -118,12 +122,12 @@ const CreateDuvidaDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full">
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Tirar Dúvidas
+        <Button className={compact ? "w-auto px-3 text-sm" : "w-full"}>
+          <PlusCircle className="h-4 w-4" />
+          {!compact && <span className="ml-2">Tirar Dúvidas</span>}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto mx-4 sm:mx-0">
         <DialogHeader>
           <DialogTitle>Qual a sua dúvida?</DialogTitle>
         </DialogHeader>
@@ -183,13 +187,13 @@ const CreateDuvidaDialog = () => {
             <Input id="picture" type="file" onChange={handleFileChange} className="col-span-3" />
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
+            <Button type="button" variant="secondary" className="w-full sm:w-auto">
               Cancelar
             </Button>
           </DialogClose>
-          <Button type="submit" onClick={handleSubmit} disabled={loading || !title || !body || !categoryId}>
+          <Button type="submit" onClick={handleSubmit} disabled={loading || !title || !body || !categoryId} className="w-full sm:w-auto">
             {loading ? "Publicando..." : "Publicar Dúvida"}
           </Button>
         </DialogFooter>

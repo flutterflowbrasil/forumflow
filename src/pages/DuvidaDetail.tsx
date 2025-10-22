@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import MainLayout from '@/components/layout/MainLayout';
 import { Duvida } from '@/components/DuvidaCard';
@@ -13,10 +13,12 @@ import Comment, { CommentType } from '@/components/Comment';
 import { useAuth } from '@/providers/AuthProvider';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 const DuvidaDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { session } = useAuth();
+  const navigate = useNavigate();
   const [duvida, setDuvida] = useState<Duvida | null>(null);
   const [comments, setComments] = useState<CommentType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -152,6 +154,17 @@ const DuvidaDetail = () => {
   return (
     <MainLayout>
       <div>
+        {/* Botão Voltar */}
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={() => navigate(-1)}
+          className="mb-4 -mt-2 hover:bg-accent"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Voltar
+        </Button>
+
         <div className="bg-card p-6 rounded-lg shadow-sm">
           <div className="flex items-center gap-2">
             {duvida.category_name && <Badge variant="outline">{duvida.category_name}</Badge>}

@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Informacoes from "./pages/Informacoes";
+import ResetPassword from "./pages/ResetPassword";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./providers/AuthProvider";
 import { SidebarProvider } from "./providers/SidebarProvider";
@@ -83,6 +84,7 @@ function App() {
                   }
                 />
                 <Route path="/login" element={<Login />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
         
                 <Route path="*" element={<NotFound />} />
               </Routes>
