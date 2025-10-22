@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import toast from "react-hot-toast";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -75,8 +75,16 @@ const ResetPassword = () => {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Nova Senha</CardTitle>
-          <CardDescription className="text-center">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-2xl font-bold">Nova Senha</CardTitle>
+            <Link to="/login">
+              <Button variant="ghost" size="sm" className="gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                Voltar
+              </Button>
+            </Link>
+          </div>
+          <CardDescription>
             Digite sua nova senha abaixo
           </CardDescription>
         </CardHeader>
@@ -129,6 +137,12 @@ const ResetPassword = () => {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Salvando..." : "Salvar Nova Senha"}
             </Button>
+
+            <div className="text-center mt-4">
+              <Link to="/login" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                Voltar para o login
+              </Link>
+            </div>
           </form>
         </CardContent>
       </Card>
